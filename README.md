@@ -30,6 +30,7 @@ Now, you need to modify the registry, which can be dangerous so follow the steps
     ![manual3](assets/assets_manual_4.png)
   - Modify the value **(Default)** to: **C:\\Windows\\System32\\uwd-oss.dll**
     ![manual2](assets/assets_manual_2.png)
+  - Make sure you have no typos!
 
 ### Step 3
 Open the **Task manager** and find the explorer process and click on restart.
