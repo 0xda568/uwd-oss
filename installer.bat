@@ -33,7 +33,7 @@ if not exist %SystemRoot%\System32\uwd-oss.dll (
 	echo ^> uwd-oss.dll not found in System32, starting setup.
 	
 	echo ^> Copying uwd-oss.dll into C:\Windows\System32...
-	copy .\uwd-oss.dll %SystemRoot%\System32\ > NULL
+	copy .\uwd-oss.dll %SystemRoot%\System32\ >nul
 	
 	if not exist %SystemRoot%\System32\uwd-oss.dll (
 		echo [-] Error while copying uwd-oss.dll.
@@ -58,14 +58,14 @@ if not exist %SystemRoot%\System32\uwd-oss.dll (
 	echo [+] Changed registry ACL
 	
 	echo ^> Changing registry explorerframe COM Server...
-	reg add HKLM\SOFTWARE\Classes\CLSID\{ab0b37ec-56f6-4a0e-a8fd-7a8bf7c2da96}\InProcServer32 /t REG_EXPAND_SZ /ve /d %SystemRoot%\System32\uwd-oss.dll /f > NULL
+	reg add HKLM\SOFTWARE\Classes\CLSID\{ab0b37ec-56f6-4a0e-a8fd-7a8bf7c2da96}\InProcServer32 /t REG_EXPAND_SZ /ve /d %SystemRoot%\System32\uwd-oss.dll /f >nul
 	
-	reg query HKLM\SOFTWARE\Classes\CLSID\{ab0b37ec-56f6-4a0e-a8fd-7a8bf7c2da96}\InProcServer32 /ve | findstr /l %SystemRoot%\\System32\\uwd-oss.dll > NULL
+	reg query HKLM\SOFTWARE\Classes\CLSID\{ab0b37ec-56f6-4a0e-a8fd-7a8bf7c2da96}\InProcServer32 /ve | findstr /l %SystemRoot%\\System32\\uwd-oss.dll >nul
 	
 	if '!errorlevel!' NEQ '0' (
 		echo [-] Error while modifying registry.
 		echo ^> Cleaning up and exiting...
-		del /f "%SystemRoot%\\System32\\uwd-oss.dll" > NULL
+		del /f "%SystemRoot%\\System32\\uwd-oss.dll" >nul
 		goto end
 	)
 	
@@ -75,7 +75,7 @@ if not exist %SystemRoot%\System32\uwd-oss.dll (
 	echo ^> uwd-oss.dll found in System32, uninstalling.
 	
 	echo ^> Removing %SystemRoot%\System32\uwd-oss.dll...
-	del /f "%SystemRoot%\\System32\\uwd-oss.dll" > NULL
+	del /f "%SystemRoot%\\System32\\uwd-oss.dll" >nul
 	
 	if exist %SystemRoot%\System32\uwd-oss.dll (
 		echo [-] Error while removing %SystemRoot%\System32\uwd-oss.dll
@@ -83,9 +83,9 @@ if not exist %SystemRoot%\System32\uwd-oss.dll (
 	
 	echo [+] Removed uwd-oss.dll
 	
-	reg add HKLM\SOFTWARE\Classes\CLSID\{ab0b37ec-56f6-4a0e-a8fd-7a8bf7c2da96}\InProcServer32 /t REG_EXPAND_SZ /ve /d %SystemRoot%\System32\explorerframe.dll /f > NULL
+	reg add HKLM\SOFTWARE\Classes\CLSID\{ab0b37ec-56f6-4a0e-a8fd-7a8bf7c2da96}\InProcServer32 /t REG_EXPAND_SZ /ve /d %SystemRoot%\System32\explorerframe.dll /f >nul
 	
-	reg query HKLM\SOFTWARE\Classes\CLSID\{ab0b37ec-56f6-4a0e-a8fd-7a8bf7c2da96}\InProcServer32 /ve | findstr /l %SystemRoot%\\System32\\explorerframe.dll > NULL
+	reg query HKLM\SOFTWARE\Classes\CLSID\{ab0b37ec-56f6-4a0e-a8fd-7a8bf7c2da96}\InProcServer32 /ve | findstr /l %SystemRoot%\\System32\\explorerframe.dll >nul
 	if '%errorlevel%' NEQ '0' (
 		echo [-] Error while modifying registry.
 	)	
@@ -94,7 +94,7 @@ if not exist %SystemRoot%\System32\uwd-oss.dll (
 )
 
 echo ^> Restarting explorer...
-taskkill /IM "explorer.exe" /F > NULL
+taskkill /IM "explorer.exe" /F >nul
 explorer
 
 echo [+] Done.
