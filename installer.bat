@@ -43,6 +43,20 @@ if not exist %SystemRoot%\System32\uwd-oss.dll (
 	
 	echo [+] Copied successfuly.
 	
+	echo ^> Changing registry ACL...
+	set TEMPFILE=%tmp%\owd-oss.tmp
+	echo \registry\machine\software\classes\clsid\{ab0b37ec-56f6-4a0e-a8fd-7a8bf7c2da96}\InProcServer32 [17 1] > %TEMPFILE%
+	regini %TEMPFILE%
+	
+	if '!errorlevel!' NEQ '0' (
+		echo [-] Error while modifying registry ACL.
+		echo ^> Cleaning up and exiting...
+		del /f "%SystemRoot%\\System32\\uwd-oss.dll" >nul 
+		goto end
+	)
+	
+	echo [+] Changed registry ACL
+	
 	echo ^> Changing registry explorerframe COM Server...
 	reg add HKLM\SOFTWARE\Classes\CLSID\{ab0b37ec-56f6-4a0e-a8fd-7a8bf7c2da96}\InProcServer32 /t REG_EXPAND_SZ /ve /d %SystemRoot%\System32\uwd-oss.dll /f > NULL
 	
@@ -84,7 +98,7 @@ taskkill /IM "explorer.exe" /F > NULL
 explorer
 
 echo [+] Done.
-pause
+exit /B
 
 :end
 echo [-] Exiting.
