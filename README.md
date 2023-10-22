@@ -59,3 +59,4 @@ Since the script modifies the registry, Admin privileges are needed.
 
 # Compability
 Tested on Windows 10 x64. Should also work on Windows 11, x64.
+  - currently buggy on windows 11 pro insider
