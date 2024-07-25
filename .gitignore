@@ -4,3 +4,5 @@
 /uwd-oss/x64
 uwd-oss/uwd-oss.vcxproj
 uwd-oss/uwd-oss.vcxproj.user
+/Release
+/uwd-oss/Release
