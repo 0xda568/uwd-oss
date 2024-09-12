@@ -1,62 +1,63 @@
 # uwd-oss
+
 Open source alternative to the Universal Watermark Remover.
 
 # Introduction
-This is a sequel to my [Universal Watermark Remover reverse engineering writeup](https://github.com/0xda568/Universal-Watermark-Disabler-Reverse-Engineering). I analyzed the closed source-software and developed my own opensource version of it, which you can find here.
+
+This is a sequel to my [Universal Watermark Remover reverse engineering writeup](https://github.com/0xda568/Universal-Watermark-Disabler-Reverse-Engineering). I analyzed the closed source-software and developed my own open source version of it, which you can find here.
+
+After I posted my reverse engineering article, the original developerof the universal watermark remover (@pr701) published the [original software source code](https://github.com/pr701/universal-watermark-disabler)
 
 # How does it work?
-The batch script utilizes [COM-hijacking](https://www.ired.team/offensive-security/persistence/t1122-com-hijacking) and [DLL-Proxying](https://www.ired.team/offensive-security/persistence/dll-proxying-for-persistence) to inject a DLL into the explorer and to persist on the system. The DLL, then hooks [ExtTextOutW](https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-exttextouta) to suppress the display of the testsigning watermark.
+
+This oss implementation of the Universal Watermark Remover uses an IAT hook now.
+
+The original software utilizes [COM-hijacking](https://www.ired.team/offensive-security/persistence/t1122-com-hijacking) and [DLL-Proxying](https://www.ired.team/offensive-security/persistence/dll-proxying-for-persistence) to inject a DLL into the explorer and to persist on the system. The DLL, then hooks [ExtTextOutW](https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-exttextouta) to suppress the display of the testsigning watermark.
 
 For a deeper dive (especially for beginners), take a look at my reverse-engineering writeup.
 
-# Installation / Removal
-## Script
+# Structure
+
+`uwd-oss/` - Contains the source of the DLL that hooks the display function
+
+`Installer\ GUI/` - Source code of the installer GUI created by @DartVanya
+
+`old/` - This is an old stage of the project, which is very buggy on some Windows versions and tried to implement the DLL proxy exactly like the original uwd.
+
+# GUI installer on AutoHotkey
+
+Also open source, written on AHK v1.1
+
+## Installation / Removal
+
+Download compiled standalone installer for your OS from the releases. The EXE is packed with UPX.
+
 ### Installation
-Get the installer.bat and uwd-oss.dll from the [releases](https://github.com/0xda568/uwd-oss/releases/tag/first) and put them into the same folder. Then simply execute installer.bat and everything should work.
+
+Run (accept UAC prompt if needed), click Install. Watermark should be gone.
 
 ### Removal
-Simply execute the script again and everything should be reverted.
 
-## Manual installation
-### Step 1
-Download **uwd-oss.dll** from the official [release](https://github.com/0xda568/uwd-oss/releases/tag/first) and copy it into **C:\\Winodws\\System32\\**
-![manual1](assets/assets_manual_1.png)
+Run (accept UAC prompt if needed), click Uninstall.
 
-### Step 2
-Now, you need to modify the registry, which can be dangerous so follow the steps cautiously.
-  - Open the **Registry Editor**
-  - Find the following key:
-      **Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Classes\CLSID\{ab0b37ec-56f6-4a0e-a8fd-7a8bf7c2da96}\InProcServer32**
-    ![manual3](assets/assets_manual_4.png)
-  - Modify the value **(Default)** to: **C:\\Windows\\System32\\uwd-oss.dll**
-    ![manual2](assets/assets_manual_2.png)
-  - Make sure you have no typos!
+*****
 
-### Step 3
-Open the **Task manager** and find the explorer process and click on restart.
-![manual3](assets/assets_manual_3.png)
+## Features
 
-After the explorer restarts, the watermark should be gone.
+- No need to restart Explorer or logoff.
+  - changes are applied immediately by inject/uninject dll into/from Explorer process and force redraw of the desktop
+- Script acquire TrustedInstaller privileges when making changes to the registry
+- Support both x64 and x86 (note: compiled x86 version cannot run on 64-bit OS)
 
-## Manual removal
-### Step 1
-Follow the same steps described in **Manual installation - Step 2**, but:
-  - change the value of **(Default)** back to **C:\\Windows\\System32\\explorerframe.dll**
+*****
 
-### Step 2
-Delete **C:\\Windows\\System32\\uwd-oss.dll**
-
-### Step 3
-Restart the explorer, as described in **Manual installation - Step 3**
-
-After the explorer restarts, the watermark should appear again (if testsigning mode is still activated) and everything should be reverted.
-
-# Showcase
-![showcase](assets/uwd-oss_showcase.gif)
-
-# Info
-Since the script modifies the registry, Admin privileges are needed.
+![installer_window](assets/installer_window.png)
 
 # Compability
-Tested on Windows 10 x64. Should also work on Windows 11, x64.
-  - currently buggy on windows 11 pro insider
+
+Tested on Windows 11 23H2, removes Test Mode and Safe Mode watermarks.\
+To run installer script from source, clone repo and run UWD-OSS.ahk from admin IDE or from "Run with UI Access" menu (AutoHotkey v1.1 should be installed).
+
+# Credit
+
+Many thanks to @DartVanya for the GUI and for the improvements!
